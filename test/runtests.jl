@@ -1,6 +1,6 @@
-using JSOTemplate
+using BlackBoxModels
 using Test
 
-@testset "JSOTemplate.jl" begin
+@testset "BlackBoxModels.jl" begin
   # Write your tests here.
 end

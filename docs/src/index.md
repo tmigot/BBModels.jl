@@ -1,7 +1,7 @@
 ```@meta
-CurrentModule = JSOTemplate
+CurrentModule = BlackBoxModels
 ```
 
-# JSOTemplate
+# BlackBoxModels
 
-Documentation for [JSOTemplate](https://github.com/JuliaSmoothOptimizers/JSOTemplate.jl).
+Documentation for [BlackBoxModels](https://github.com/JuliaSmoothOptimizers/BlackBoxModels.jl).
