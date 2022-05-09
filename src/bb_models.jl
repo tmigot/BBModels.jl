@@ -100,7 +100,7 @@ function obj!(nlp::BBModel{T,S,P}, v::S, p::Problem{P}) where {T, S, P}
   solver_function = nlp.solver_function
   auxiliary_function = nlp.auxiliary_function
   nlp_to_solve = get_nlp(p)
-  x = (; zip(keys(nlp.meta.x_n), v)...)
+  x = (; zip(nlp.meta.x_n, v)...)
 
   bmark_result, stat = @benchmark_with_result $solver_function($nlp_to_solve, $x) seconds = 10 samples = 5 evals = 1
   times = bmark_result.times
