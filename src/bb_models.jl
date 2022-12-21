@@ -203,20 +203,6 @@ function obj!(nlp::BBModel, v::Vector{Float64}, p::Problem)
   return auxiliary_function(p_metric), p_metric
 end
 
-# NLPModels functions to overload:
-
-NLPModels.grad!(::BBModel, ::AbstractVector, ::AbstractVector) =
-  error("Cannot evaluate gradient of a BBModel")
-
-NLPModels.hess_structure!(::BBModel, ::AbstractVector, ::AbstractVector) =
-  error("Cannot get the Hessian of a BBModel")
-
-NLPModels.hess_coord!(::BBModel, ::AbstractVector, ::AbstractVector; obj_weight = 1.0) =
-  error("Cannot evaluate the objective Hessian of a BBModel")
-
-NLPModels.hprod!(::BBModel, ::AbstractVector, ::AbstractVector, ::AbstractVector; obj_weight = 1) =
-  error("Cannot obtain the  objective Hessian of a BBModel")
-
 function NLPModels.cons!(nlp::BBModel, x::AbstractVector, c::AbstractVector)
   @lencheck nlp.meta.nvar x
   @lencheck nlp.meta.ncon c
@@ -233,4 +219,3 @@ function NLPModels.reset_data!(nlp::BBModel)
 
   return nlp
 end
-# TODO: overload function from NLPModels for constrained models
