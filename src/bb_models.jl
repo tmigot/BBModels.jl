@@ -77,7 +77,7 @@ function BBModel(
 ) where {P <: AbstractParameterSet, F1 <: Function, F2 <: Function, M <: AbstractNLPModel}
   length(problems) > 0 || error("No problems given")
   nvar = length(x0)
-  bbmeta = BBModelMeta(nvar, x0, x_n, lvar, uvar;)
+  bbmeta = BBModelMeta(nvar, x0, x_n)
   meta_x0 = Vector{Float64}([Float64(i) for i in x0])
   meta_lvar = Vector{Float64}([Float64(i) for i in lvar])
   meta_uvar = Vector{Float64}([Float64(i) for i in uvar])
@@ -144,7 +144,7 @@ function BBModel(
   length(problems) > 0 || error("No problems given")
   @lencheck ncon ucon lcon
   nvar = length(x0)
-  bbmeta = BBModelMeta(nvar, x0, x_n, lvar, uvar;)
+  bbmeta = BBModelMeta(nvar, x0, x_n)
   meta = NLPModelMeta(
     nvar;
     x0 = Vector{Float64}([Float64(i) for i in x0]),
@@ -168,7 +168,7 @@ function BBModel(
 end
 
 # By default, this function will return the time in seconds
-function NLPModels.obj(nlp::BBModel, x::Vector{Float64})
+function NLPModels.obj(nlp::BBModel, x::AbstractVector)
   problems = nlp.problems
   solver_function = nlp.solver_function
   total_time = 0.0
