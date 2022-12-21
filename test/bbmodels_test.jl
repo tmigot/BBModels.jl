@@ -20,7 +20,7 @@ end
   nlp = BBModel(param_set, solver_func, aux_func, problems)
 
   @testset "Test BBModels attributes" verbose = true begin
-    x = nlp.bb_meta.x0
+    x = nlp.meta.x0
     x_n = nlp.bb_meta.x_n
     lvar = nlp.meta.lvar
     uvar = nlp.meta.uvar
@@ -37,6 +37,6 @@ end
   end
 
   @testset "Test `obj` method with BBModel" verbose = true begin
-    @test BBModels.obj(nlp, nlp.bb_meta.x0) ≥ 0.0
+    @test BBModels.obj(nlp, nlp.meta.x0) ≥ 0.0
   end
 end

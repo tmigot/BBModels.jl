@@ -27,10 +27,10 @@ Represents a black box optimization problem that follows the api described in `N
   `problems` is a dictionary containing `AbstractNLPModels` to solve using the `solver_function` method.
   `parameter_set` is the `AbstractParameterSet` of a given solver.
 """
-mutable struct BBModel{F1 <: Function, F2 <: Function, P <: AbstractParameterSet} <:
-               AbstractBBModel{Float64, Vector{Float64}}
+mutable struct BBModel{F1 <: Function, F2 <: Function, P <: AbstractParameterSet, T, S} <:
+               AbstractBBModel{T, S}
   bb_meta::BBModelMeta
-  meta::NLPModelMeta
+  meta::NLPModelMeta{T, S}
   counters::Counters
   solver_function::F1
   auxiliary_function::F2
@@ -180,7 +180,7 @@ function NLPModels.obj(nlp::BBModel, x::AbstractVector)
 end
 
 # Function to use for NOMAD: assumes that an interface will sanitize Nomad's output
-function obj!(nlp::BBModel, v::Vector{Float64}, p::Problem)
+function obj!(nlp::BBModel, v::AbstractVector, p::Problem)
   haskey(nlp.problems, get_id(p)) || error("Problem could not be found in problem set")
 
   solver_function = nlp.solver_function
