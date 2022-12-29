@@ -50,14 +50,12 @@ function BBModel(
   uvar = upper_bounds(parameter_set),
   kwargs...,
 ) where {P <: AbstractParameterSet, F1 <: Function, F2 <: Function, M <: AbstractNLPModel}
-  x_n = names(parameter_set)
   return BBModel(
     values(parameter_set),
     solver_function,
     auxiliary_function,
     problems,
     parameter_set,
-    x_n,
     lvar,
     uvar;
     kwargs...,
