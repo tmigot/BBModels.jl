@@ -4,7 +4,7 @@ function solver_func(nlp::AbstractNLPModel, p::AbstractVector)
   @info "bbmodel vector: $p"
 end
 
-function aux_func(p_metric::ProblemMetrics)
+function tailored_aux_func(p_metric::ProblemMetrics)
   median_time = median(get_times(p_metric))
   memory = get_memory(p_metric)
   solved = get_solved(p_metric)
@@ -12,11 +12,10 @@ function aux_func(p_metric::ProblemMetrics)
   return median_time + memory + counters.neval_obj + (Float64(!solved) * 5.0 * median_time)
 end
 
-@testset "Testing BBModels" verbose = true begin
+@testset "Testing BBModels" verbose = true for aux_func in (time_only, memory_only, sumfc, tailored_aux_func)
   T = Float64
   I = Int64
-  B = Bool
-  param_set = R2ParameterSet{T, I, B}()
+  param_set = R2ParameterSet()
   nlp = BBModel(param_set, solver_func, aux_func, problems)
 
   @testset "Test BBModels attributes" verbose = true begin
