@@ -24,16 +24,18 @@ end
     x_n = nlp.bb_meta.x_n
     lvar = nlp.meta.lvar
     uvar = nlp.meta.uvar
+    icat = nlp.bb_meta.icat
+    ibool = nlp.bb_meta.ibool
     iint = nlp.bb_meta.iint
     ifloat = nlp.bb_meta.ifloat
-    ibool = nlp.bb_meta.ibool
     @test x == values(nlp.parameter_set)
     @test x_n == [string(i) for i in fieldnames(typeof(nlp.parameter_set))]
     @test lvar == lower_bounds(nlp.parameter_set)
     @test uvar == upper_bounds(nlp.parameter_set)
+    @test icat == Int[]
+    @test ibool == Int[10]
     @test iint == Int[9]
     @test ifloat == Int[i for i = 1:8]
-    @test ibool == Int[10]
   end
 
   @testset "Test `obj` method with BBModel" verbose = true begin

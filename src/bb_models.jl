@@ -70,14 +70,13 @@ function BBModel(
   auxiliary_function::F2,
   problems::Vector{M},
   parameter_set::P,
-  x_n::Vector{String},
   lvar::AbstractVector,
   uvar::AbstractVector;
   name::String = "generic-BBModel",
 ) where {P <: AbstractParameterSet, F1 <: Function, F2 <: Function, M <: AbstractNLPModel}
   length(problems) > 0 || error("No problems given")
   nvar = length(x0)
-  bbmeta = BBModelMeta(nvar, x0, x_n)
+  bbmeta = BBModelMeta(parameter_set)
   meta_x0 = Vector{Float64}([Float64(i) for i in x0])
   meta_lvar = Vector{Float64}([Float64(i) for i in lvar])
   meta_uvar = Vector{Float64}([Float64(i) for i in uvar])
@@ -109,7 +108,6 @@ function BBModel(
   uvar = upper_bounds(parameter_set),
   kwargs...,
 ) where {P <: AbstractParameterSet, F1 <: Function, F2 <: Function, M <: AbstractNLPModel}
-  x_n = names(parameter_set)
   x0 = values(parameter_set)
   return BBModel(
     x0,
@@ -120,7 +118,6 @@ function BBModel(
     ucon,
     problems,
     parameter_set,
-    x_n,
     lvar,
     uvar;
     kwargs...,
@@ -136,7 +133,6 @@ function BBModel(
   ucon::Vector{Float64},
   problems::Vector{M},
   parameter_set::P,
-  x_n::Vector{String},
   lvar::AbstractVector,
   uvar::AbstractVector;
   name::String = "generic-BBModel",
@@ -144,7 +140,7 @@ function BBModel(
   length(problems) > 0 || error("No problems given")
   @lencheck ncon ucon lcon
   nvar = length(x0)
-  bbmeta = BBModelMeta(nvar, x0, x_n)
+  bbmeta = BBModelMeta(parameter_set)
   meta = NLPModelMeta(
     nvar;
     x0 = Vector{Float64}([Float64(i) for i in x0]),
