@@ -4,6 +4,29 @@ function solver_func(nlp::AbstractNLPModel, p::AbstractVector)
   @info "bbmodel vector: $p"
 end
 
+@testset "Testing multi-precision BBModels" verbose = true for T in (Float32, Float64)
+  param_set = R2ParameterSet()
+  x0 = T.(values(param_set))
+  nlp = BBModel(param_set, problems, solver_func, time_only, x0 = x0)
+  @test eltype(nlp.meta.x0) == T
+  @test eltype(nlp.meta.lvar) == T
+  @test eltype(nlp.meta.uvar) == T
+end
+
+@testset "Testing multi-precision BBModels" verbose = true for T in (Float32, Float64)
+  param_set = R2ParameterSet()
+  c = x -> [x[1]]
+  con = zeros(T, 1)
+  x0 = T.(values(param_set))
+  nlp = BBModel(param_set, problems, solver_func, time_only, c, con, con, x0 = x0)
+  @test eltype(nlp.meta.x0) == T
+  @test eltype(nlp.meta.lvar) == T
+  @test eltype(nlp.meta.uvar) == T
+  @test eltype(nlp.meta.lcon) == T
+  @test eltype(nlp.meta.ucon) == T
+  @test eltype(cons(nlp, nlp.meta.x0)) == T
+end
+
 function tailored_aux_func(p_metric::ProblemMetrics)
   median_time = median(get_times(p_metric))
   memory = get_memory(p_metric)
@@ -17,7 +40,7 @@ end
   T = Float64
   I = Int64
   param_set = R2ParameterSet()
-  nlp = BBModel(param_set, solver_func, aux_func, problems)
+  nlp = BBModel(param_set, problems, solver_func, aux_func)
 
   @testset "Test BBModels attributes" verbose = true begin
     x = nlp.meta.x0
