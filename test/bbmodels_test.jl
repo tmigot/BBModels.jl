@@ -1,7 +1,9 @@
 # TODO: create a function that calls a solver
-function solver_func(nlp::AbstractNLPModel, p::AbstractVector)
+function solver_func(nlp::AbstractNLPModel, p::AbstractParameterSet)
   @info "problem name: $(get_name(nlp))"
-  @info "bbmodel vector: $p"
+  x = values(p)
+  @info "bbmodel vector: $x"
+  return GenericExecutionStats(nlp)
 end
 
 @testset "Testing multi-precision BBModels" verbose = true for T in (Float32, Float64)
