@@ -56,7 +56,7 @@ function BBModel(
   problems::Vector{M},
   solver_function::Function,
   auxiliary_function::Function = time_only;
-  x0::S = Float64.(values(parameter_set)),
+  x0::S = Float64.(values_num(parameter_set)),
   lvar::S = eltype(x0).(lower_bounds(parameter_set)),
   uvar::S = eltype(x0).(upper_bounds(parameter_set)),
   name::String = "generic-BBModel",
@@ -87,7 +87,7 @@ function BBModel(
   c::Function,
   lcon::S,
   ucon::S;
-  x0::S = eltype(S).(values(parameter_set)),
+  x0::S = eltype(S).(values_num(parameter_set)),
   lvar::S = eltype(S).(lower_bounds(parameter_set)),
   uvar::S = eltype(S).(upper_bounds(parameter_set)),
   name::String = "generic-BBModel",
@@ -121,7 +121,7 @@ function BBModel(
 end
 
 function NLPModels.obj(nlp::BBModel, x::AbstractVector; seconds = 10.0, samples = 1, evals = 1)
-  @lencheck nlp.bb_meta.nvar x
+  @lencheck nlp.meta.nvar x
   param_set = nlp.parameter_set
   total = 0.0
   for (pb_id, problem) in nlp.problems

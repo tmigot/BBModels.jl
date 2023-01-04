@@ -47,3 +47,28 @@ struct R2ParameterSet{T <: AbstractFloat, I <: Integer} <: AbstractParameterSet
     R2ParameterSet{Float64, Int}(; kwargs...)
   end
 end
+
+struct TestParameterSet{T <: AbstractFloat, I <: Integer} <: AbstractParameterSet
+  β::Parameter{T, RealInterval{T}}
+  mem::Parameter{I, IntegerRange{I}}
+  submethod::Parameter{Symbol, CategoricalSet{Symbol}}
+
+  function TestParameterSet{T, I}(;
+    β::T = zero(T),
+    mem::I = I(5),
+    submethod::Symbol = :cg,
+  ) where {T <: AbstractFloat, I <: Integer}
+
+    p_set = new{T, I}(
+      Parameter(T(β), RealInterval(T(0), T(1000)), ""),
+      Parameter(I(mem), IntegerRange(I(5), I(20)), ""),
+      Parameter(submethod, CategoricalSet([:cg, :lsqr, :cgls]), ""),
+    )
+    set_names!(p_set)
+    return p_set
+  end
+
+  function TestParameterSet(; kwargs...)
+    TestParameterSet{Float64, Int}(; kwargs...)
+  end
+end

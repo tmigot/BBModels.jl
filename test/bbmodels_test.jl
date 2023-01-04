@@ -29,6 +29,39 @@ end
   @test eltype(cons(nlp, nlp.meta.x0)) == T
 end
 
+@testset "With Categorical parameters" verbose = true for T in (Float32, Float64)
+  param_set = TestParameterSet()
+  x0 = values(param_set)
+  x = rand(T, 2)
+  values_num!(param_set, x)
+  @test x == T[0, 5]
+  bbmeta = BBModelMeta(param_set)
+  @test bbmeta.nvar == 3
+  @test bbmeta.icat == [3]
+  @test bbmeta.iint == [2]
+  @test bbmeta.ifloat == [1]
+  @test bbmeta.ibool == []
+  
+  nlp = BBModel(param_set, problems, solver_func, time_only, x0 = x)
+  @test get_nvar(nlp) == 2
+  @test eltype(get_x0(nlp)) == T
+  @test get_lvar(nlp) == [0; 5]
+  @test get_uvar(nlp) == [1000; 20]
+  @show obj(nlp, x)
+
+  c = x -> [x[1]]
+  con = zeros(T, 1)
+  nlp = BBModel(param_set, problems, solver_func, time_only, c, con, con, x0 = x)
+  @test get_nvar(nlp) == 2
+  @test eltype(get_x0(nlp)) == T
+  @test get_lvar(nlp) == [0; 5]
+  @test get_uvar(nlp) == [1000; 20]
+  @test eltype(nlp.meta.lcon) == T
+  @test eltype(nlp.meta.ucon) == T
+  @test eltype(cons(nlp, nlp.meta.x0)) == T
+  @show obj(nlp, x)
+end
+
 function tailored_aux_func(p_metric::ProblemMetrics)
   median_time = median(get_times(p_metric))
   memory = get_memory(p_metric)
