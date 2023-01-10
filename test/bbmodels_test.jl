@@ -47,7 +47,8 @@ end
   @test eltype(get_x0(nlp)) == T
   @test get_lvar(nlp) == [0; 5]
   @test get_uvar(nlp) == [1000; 20]
-  @show obj(nlp, x)
+  @test obj(nlp, x) ≥ 0
+  @test obj_cat(nlp, x0) ≥ 0
 
   c = x -> [x[1]]
   con = zeros(T, 1)
@@ -59,7 +60,8 @@ end
   @test eltype(nlp.meta.lcon) == T
   @test eltype(nlp.meta.ucon) == T
   @test eltype(cons(nlp, nlp.meta.x0)) == T
-  @show obj(nlp, x)
+  @test obj(nlp, x) ≥ 0
+  @test obj_cat(nlp, x0) ≥ 0
 end
 
 @testset "Subset of parameters" verbose = true for T in (Float32, Float64)
@@ -85,6 +87,7 @@ end
   @test get_lvar(nlp) == [5]
   @test get_uvar(nlp) == [20]
   @test obj(nlp, x) ≥ 0
+  @test obj_cat(nlp, x0) ≥ 0
 
   c = x -> [x[1]]
   con = zeros(T, 1)
@@ -97,6 +100,7 @@ end
   @test eltype(nlp.meta.ucon) == T
   @test eltype(cons(nlp, nlp.meta.x0)) == T
   @test obj(nlp, x) ≥ 0
+  @test obj_cat(nlp, x0) ≥ 0
 end
 
 function tailored_aux_func(p_metric::ProblemMetrics)
