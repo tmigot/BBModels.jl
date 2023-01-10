@@ -1,4 +1,4 @@
-@testset "utils function" verbose = true begin
+@testset "utils function" begin
   @testset "test `normalize_times!`:" begin
     original_times = [rand() * 1e6]
     normalized_times = copy(original_times)
@@ -7,12 +7,12 @@
     @test (normalized_times .* cpu_frequency) ≈ original_times
   end
 
-  @testset "test `is_failure` function" verbose = true begin
+  @testset "test `is_failure` function" begin
     nlp = ADNLPModel(x -> dot(x, x), zeros(2))
     stats = GenericExecutionStats(nlp)
     set_status!(stats, :first_order)
     @test BBModels.is_failure(stats) == false
-    @testset "Test failure status: $failure_status" verbose = true for failure_status in [
+    @testset "Test failure status: $failure_status" for failure_status in [
       :exception,
       :infeasible,
       :max_eval,
