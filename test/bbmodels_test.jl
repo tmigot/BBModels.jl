@@ -1,12 +1,9 @@
 # TODO: create a function that calls a solver
 function solver_func(nlp::AbstractNLPModel, p::AbstractParameterSet)
-  @info "problem name: $(get_name(nlp))"
-  x = values(p)
-  @info "bbmodel vector: $x"
   return GenericExecutionStats(nlp)
 end
 
-@testset "Testing multi-precision BBModels" verbose = true for T in (Float32, Float64)
+@testset "Testing multi-precision $(T)-BBModels" verbose = true for T in (Float32, Float64)
   param_set = R2ParameterSet()
   x0 = T.(values(param_set))
   nlp = BBModel(param_set, problems, solver_func, time_only, x0 = x0)
@@ -15,7 +12,7 @@ end
   @test eltype(nlp.meta.uvar) == T
 end
 
-@testset "Testing multi-precision BBModels" verbose = true for T in (Float32, Float64)
+@testset "Testing multi-precision for constrained $(T)-BBModels" verbose = true for T in (Float32, Float64)
   param_set = R2ParameterSet()
   c = x -> [x[1]]
   con = zeros(T, 1)
@@ -29,7 +26,7 @@ end
   @test eltype(cons(nlp, nlp.meta.x0)) == T
 end
 
-@testset "With Categorical parameters" verbose = true for T in (Float32, Float64)
+@testset "Testing multi-precision for (constrained) $(T)-BBModels with categorical parameters" verbose = true for T in (Float32, Float64)
   param_set = TestParameterSet()
   x0 = values(param_set)
   x = rand(T, 2)
@@ -64,7 +61,7 @@ end
   @test obj_cat(nlp, x0) ≥ 0
 end
 
-@testset "Subset of parameters" verbose = true for T in (Float32, Float64)
+@testset "Testing multi-precision $T with a subset of parameters" verbose = true for T in (Float32, Float64)
   param_set = TestParameterSet()
   subset = (:submethod, :mem) # switched the order
 
@@ -111,14 +108,14 @@ function tailored_aux_func(p_metric::ProblemMetrics)
   return median_time + memory + counters.neval_obj + (Float64(!solved) * 5.0 * median_time)
 end
 
-@testset "Testing BBModels" verbose = true for aux_func in
+@testset "Testing BBModels with cost functions $(string(aux_func))" for aux_func in
                                                (time_only, memory_only, sumfc, tailored_aux_func)
   T = Float64
   I = Int64
   param_set = R2ParameterSet()
   nlp = BBModel(param_set, problems, solver_func, aux_func)
 
-  @testset "Test BBModels attributes" verbose = true begin
+  @testset "Test BBModels attributes" begin
     x = nlp.meta.x0
     x_n = nlp.bb_meta.x_n
     lvar = nlp.meta.lvar
@@ -137,7 +134,7 @@ end
     @test ifloat == Int[i for i = 1:8]
   end
 
-  @testset "Test `obj` method with BBModel" verbose = true begin
+  @testset "Test `obj` method with BBModel" begin
     @test BBModels.obj(nlp, nlp.meta.x0) ≥ 0.0
   end
 end
