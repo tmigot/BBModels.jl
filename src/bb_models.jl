@@ -1,4 +1,4 @@
-export BBModel, obj, cost
+export BBModel, obj, obj_cat, cost
 
 """Mutable struct `BBModel`
 
@@ -127,19 +127,60 @@ function BBModel(
   )
 end
 
-function NLPModels.obj(nlp::BBModel, x::AbstractVector; seconds = 10.0, samples = 1, evals = 1)
+"""
+    obj(nlp::BBModel, x::AbstractVector; kwargs...)
+
+Objective function of the `BBModel`. 
+The difference with [`obj_cat`](@ref) is that `x` contains only the numerical parameters (excluding categorical variables).
+Therefore, `x` is of length `nlp.meta.nvar`.
+
+The keyword arguments are passed to [`cost`](@ref).
+"""
+function NLPModels.obj(nlp::BBModel, x::AbstractVector; kwargs...)
   @lencheck nlp.meta.nvar x
+  increment!(nlp, :neval_obj)
   param_set, subset = nlp.parameter_set, nlp.subset
   total = 0.0
   for (pb_id, problem) in nlp.problems
     set_values_num!(subset, param_set, x)
-    p_metric = cost(nlp, problem, seconds = seconds, samples = samples, evals = evals)
+    p_metric = cost(nlp, problem; kwargs...)
     total += nlp.auxiliary_function(p_metric)
   end
 
   return total
 end
 
+"""
+    obj_cat(nlp::BBModel, x::AbstractVector; kwargs...)
+
+
+Objective function of the `BBModel`.
+The difference with [`obj`](@ref) is that `x` contains all the parameters (including categorical variables).
+Therefore, `x` is of length `nlp.bb_meta.nvar`.
+
+The keyword arguments are passed to [`cost`](@ref).
+"""
+function obj_cat(nlp::BBModel, x::AbstractVector; kwargs...)
+  @lencheck nlp.bb_meta.nvar x
+  increment!(nlp, :neval_obj)
+  param_set, subset = nlp.parameter_set, nlp.subset
+  total = 0.0
+  for (pb_id, problem) in nlp.problems
+    set_values!(subset, param_set, x)
+    p_metric = cost(nlp, problem; kwargs...)
+    total += nlp.auxiliary_function(p_metric)
+  end
+
+  return total
+end
+
+
+"""
+    cost(nlp::BBModel, p::Problem; seconds = 10.0, samples = 1, evals = 1)
+
+For a given problem `p::Problem`, it returns a [`ProblemMetrics`](@ref) containing the benchmark's results of `nlp.solver_function`.
+The keyword arguments are parameters for the benchmark.
+"""
 function cost(nlp::BBModel, p::Problem; seconds = 10.0, samples = 1, evals = 1)
   haskey(nlp.problems, get_id(p)) || error("Problem could not be found in problem set")
 
