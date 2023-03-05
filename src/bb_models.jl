@@ -153,8 +153,8 @@ function obj_nomad(nlp::BBModel, x::AbstractVector, problems::Vector{Problem}; k
   param_set, subset = nlp.parameter_set, nlp.subset
   vec_metric = Vector{ProblemMetrics}(undef, length(problems))
   set_values_num!(subset, param_set, x)
-  for (pb_id, problem) in problems
-    vec_metric[pb_id] = cost(nlp, problem; kwargs...)
+  for (i, problem) in enumerate(problems)
+    vec_metric[i] = cost(nlp, problem; kwargs...)
   end
   return nlp.f(vec_metric), vec_metric
 end
