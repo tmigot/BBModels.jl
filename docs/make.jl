@@ -9,18 +9,18 @@ makedocs(;
   linkcheck = false,
   strict = false,
   authors = "Abel Soares Siqueira <abel.s.siqueira@gmail.com> and contributors",
-  repo = "https://github.com/JuliaSmoothOptimizers/BBModels.jl/blob/{commit}{path}#{line}",
+  repo = "https://github.com/ProofOfConceptForJuliSmoothOptimizers/BBModels.jl/blob/{commit}{path}#{line}",
   sitename = "BBModels.jl",
   format = Documenter.HTML(;
     prettyurls = get(ENV, "CI", "false") == "true",
-    canonical = "https://JuliaSmoothOptimizers.github.io/BBModels.jl",
+    canonical = "https://ProofOfConceptForJuliSmoothOptimizers.github.io/BBModels.jl",
     assets = ["assets/style.css"],
   ),
   pages = ["Home" => "index.md", "Reference" => "reference.md"],
 )
 
 deploydocs(;
-  repo = "github.com/JuliaSmoothOptimizers/BBModels.jl",
+  repo = "github.com/ProofOfConceptForJuliSmoothOptimizers/BBModels.jl",
   push_preview = true,
   devbranch = "main",
 )
